@@ -1,42 +1,37 @@
-## This function has 2 subfunctions: cachecheck(), cacheSolve()
-## First we define all the functions, and the call the 1st one, which in its 
-## turn calls the 2nd. I purposefully wrote this in a 
-## different way than the makeVector()/cachemean() ones, because the code seems to be 
-## more intuitive this way. It still does what it should - calculates the
-## inverse of the matrix, or shows the cache of last calculation if I ask for
-## the inverse of the same matrix. 
+## Put comments here that give an overall description of what your
+## functions do
 
-makeCacheMatrix <- function (x=matrix())
+## Write a short comment describing this function
+
+makeCacheMatrix <- function(x = matrix()) {
+  inv <- NULL
+  set <- function(y) {
+    x <<- y
+    inv <<- NULL
+  }
+    get <- function() x
+    setinv <- function(solve) inv <<- solve
+    getinv <- function() inv
+    
+    list(set = set, get = get,
+         setinv = setinv,
+         getinv = getinv)
+    }
+
+
+## Write a short comment describing this function
+
+cacheSolve <- function(x, ...) {
+        ## Return a matrix that is the inverse of 'x'
   
-{
-  ##let's define a checking cache function first
-  cachecheck <- function() {
-    #checking if the last used X and current X are the same
-    if (identical(x,used_x)) {
-      cacheSolve(x,T)
-      ## calling the solve function with "cached=true" argument
-    } else
-      cacheSolve(x)
-    ##else calling it with "false" one
-  }
-}
-
-  ##now let's define a function that prints a cache
-cacheSolve <- function(x, cached=F)
-{
-  {
-    ##if it's called with TRUE parameter, it just shows the cache for prev.result
-    if(cached==T) {
+    inv <- x$getinv()
+    if(!is.null(inv)) {
       message("getting cached data")
-      return(cache) } else
-        ##and if called with FALSE one, it actually solves the cache. 
-    result <- solve(x)
-    ##after calculating the cache it updates the cache and the last used X parameters
-    used_x <<- x
-    cache <<- result
-    ##and exits with a result
-    return(result)
+      return(inv)
+    }
+    data <- x$get()
+    inv <- solve(data, ...)
+    x$setinv(inv)
+    inv
   }
-  ##Now let us start the whole thing, calling the cachecheck() function
-  cachecheck()
-}
+
